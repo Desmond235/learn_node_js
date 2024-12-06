@@ -7,7 +7,7 @@
 // require('dotenv').config()
 const jwt = require('jsonwebtoken');
 const CustomAPIError = require('../errors/custom-error')
-const login = async (req, res) => {
+const login = async (req, res, next) => {
     const { username, password } = req.body;
 
     // mongo validation,
@@ -23,7 +23,6 @@ const login = async (req, res) => {
     const token = jwt.sign({ id, username }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
     console.log(process.env.JWT_SECRET)
-    console.log(token);
 
     res.status(200).json({
         msg: "User created",
@@ -32,27 +31,13 @@ const login = async (req, res) => {
 }
 
 const dashboard = async (req, res) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer")) {
-        throw new CustomAPIError('Please provide email and password', 400)
-    }
+    console.log(req.user.id);
+    const luckyNumber = Math.floor(Math.random() * 90);
 
-    const token = authHeader.split(' ')[1];
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        const luckyNumber = Math.floor(Math.random() * 90);
-
-        console.log(decoded)
-
-        res.status(200).json({
-            msg: `Hello, ${decoded.username} ` ,
-            secret: `Here is your authorized data, your lucky number is ${luckyNumber}`
-        })
-    } catch (error) {
-        throw new CustomAPIError('Not authorized to access this route', 401)
-    }
+    res.status(200).json({
+        msg: `Hello, ${req.user.username} ` ,
+        secret: `Here is your authorized data, your lucky number is ${luckyNumber}`
+    })
 }
 
 module.exports = {
