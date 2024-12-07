@@ -31,11 +31,11 @@ const login = async (req, res, next) => {
 }
 
 const dashboard = async (req, res) => {
-    console.log(req.user.id);
     const luckyNumber = Math.floor(Math.random() * 90);
+    const {username} = req.user
 
     res.status(200).json({
-        msg: `Hello, ${req.user.username} ` ,
+        msg: `Hello, ${username} ` ,
         secret: `Here is your authorized data, your lucky number is ${luckyNumber}`
     })
 }
