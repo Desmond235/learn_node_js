@@ -6,7 +6,7 @@
 
 // require('dotenv').config()
 const jwt = require('jsonwebtoken');
-const CustomAPIError = require('../errors/custom-error')
+const {BadRequestError} = require('../errors')
 const login = async (req, res, next) => {
     const { username, password } = req.body;
 
@@ -15,7 +15,7 @@ const login = async (req, res, next) => {
     // check in  the controller
 
     if (!username || !password) {
-        throw new CustomAPIError('No token provided', 401)
+        throw new BadRequestError('Please provide email and password');
     }
 
     const id = new Date().getDate()
