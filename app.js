@@ -24,3 +24,8 @@ app.get('/api/people', (req, res) => {
 
 app.listen(port, () => console.log(`Server is listening on port ${port}...`));
 
+const map = {name: 'desmond', age: 34};
+const map2 ={name: 'frank', age:12}
+const copyMap = Object.keys(map)
+console.log(copyMap);
+
