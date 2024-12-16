@@ -39,10 +39,6 @@ UserSchema.methods.createJWT = function () {
   });
 };
 
-UserSchema.methods.verifyJWT = function () {
-  return jwt.verify(this.createJWT(), "jwtSecret");
-};
-
 UserSchema.methods.comparePassword = async function(candidatePassword){
   const isMatch = await bcrypt.compare(candidatePassword, this.password)
   return isMatch;
