@@ -15,6 +15,7 @@ const authenticationMiddleware = async (req, res, next) => {
         
          const {userId, name} = decodedToken;
          req.user = {userId, name}
+         console.log(userId)
          next()
     } catch (error) {
         throw new UnauthenticatedError('Not authorized')
