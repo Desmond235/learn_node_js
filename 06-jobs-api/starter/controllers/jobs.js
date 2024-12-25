@@ -4,7 +4,7 @@ const { BadRequestError, NotFoundError} = require('../errors')
 
 const getAllJobs = async (req, res) => {
     const jobs = await Job.find({createdBy: req.user.createdBy}).sort('createdAt');
-    res.status(StatusCodes.OK).json({ jobs})
+    res.status(StatusCodes.OK).json({ jobs, count: jobs.length})
     
     if(!jobs){
         throw new NotFoundError(`No jobs found`)
@@ -25,12 +25,14 @@ const getJob = async (req, res) => {
     if(!job){
         throw new NotFoundError(`No job found with id ${jobId}`)
     }
+
+    res.status(StatusCodes.OK).json({ job })
 }
 
 const createJob = async (req, res) => {
     req.body.createdBy = req.user.userId
     const job = await Job.create(req.body);
-    res.status(StatusCodes.OK).json({ job})
+    res.status(StatusCodes.CREATED).json({ job})
 
 }
 
@@ -42,17 +44,22 @@ const updateJob = async (req, res) => {
      } = req
 
      if(company === '' || position === '') {
-        throw new BadRequestError(`company or position required`)
+        throw new BadRequestError(`company or position fields cannot be empty`)
      }
 
      const job = await Job.findByIdAndUpdate({
         _id: jobId,
         createdBy: userId
-     })
+     },
+     req.body,
+     {new: true, runValidators: true}
+    )
 
      if(!job){
         throw new NotFoundError(`No job found with id ${jobId}`)
      }
+
+     res.status(StatusCodes.OK).json({ job})
 
 }
 
@@ -70,6 +77,8 @@ const deleteJob = async (req, res) =>{
     if(!job){
         throw new NotFoundError(`No job found with id ${jobId}`)
     }
+
+    res.status(StatusCodes.OK).json({ job})
 }
 
 module.exports = {
